@@ -18,7 +18,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 dotenv.load_dotenv()
 
-from openai_mcp.services import chat, generate
+from openai_mcp.services import chat as _chat_service, generate as _generate_service
 
 # 从环境变量获取API密钥
 API_KEY = os.getenv("OPENAI_API_KEY", "")
@@ -61,7 +61,7 @@ async def chat(
         model: Model to use
         system_prompt: Optional system prompt
     """
-    result = await chat(
+    result = await _chat_service(
         message=message,
         model=model,
         system_prompt=system_prompt,
@@ -91,7 +91,7 @@ async def make_images(
         aspect_ratio: Image aspect ratio
         resolution: Image resolution
     """
-    result = await generate(
+    result = await _generate_service(
         prompt=message,
         reference_images=reference_images,
         model=model or os.getenv("IMAGE_MODEL", "gemini-3-pro-image-preview"),
