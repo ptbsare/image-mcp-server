@@ -115,13 +115,18 @@ def main():
 
     支持通过以下环境变量配置：
     - OPENAI_API_KEY: API密钥
-    - PORT: 端口号（默认8000）
-    - TRANSPORT: 传输方式（默认http）
+    - PORT: 端口号（默认8000，仅HTTP/SSE传输生效）
+    - TRANSPORT: 传输方式（默认http，可选 http、sse、stdio）
     """
-    port = int(os.getenv("PORT", "8000"))
     transport = os.getenv("TRANSPORT", "http")
 
-    mcp.run(transport=transport, port=port, host = "0.0.0.0")
+    if transport in ("http", "sse"):
+        port = int(os.getenv("PORT", "8000"))
+        mcp.run(transport=transport, port=port, host="0.0.0.0")
+    elif transport == "stdio":
+        mcp.run(transport="stdio")
+    else:
+        raise ValueError(f"不支持的传输方式: {transport}，可选值: http, sse, stdio")
 
 
 if __name__ == "__main__":
